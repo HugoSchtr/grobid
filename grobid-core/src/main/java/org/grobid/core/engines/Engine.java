@@ -420,17 +420,16 @@ public class Engine implements Closeable {
     /**
      * Create training data for the monograph model based on the application of
      * the current monograph text model on a new PDF
-     *
      * @param inputFile    : the path of the PDF file to be processed
      * @param pathRaw      : the path where to put the CRF feature file
      * @param pathTEI      : the path where to put the annotated TEI representation (the
-     *                     file to be corrected for gold-level training data)
+ *                     file to be corrected for gold-level training data)
      * @param id           : an optional ID to be used in the TEI file and the full text
-     *                     file, -1 if not used
      */
     public void createTrainingMonograph(File inputFile, String pathRaw, String pathTEI, int id) {
-        Document doc = parsers.getMonographParser().createTrainingFromPDF(inputFile, pathRaw, pathTEI, id);
+        parsers.getMonographParser().createTrainingMonograph(inputFile, pathRaw, pathTEI, id);
     }
+
 
     /**
      * Generate blank training data from provided directory of PDF documents, i.e. where TEI files are text only
@@ -629,6 +628,7 @@ public class Engine implements Closeable {
             throw new GrobidException("An exception occured while running Grobid batch.", exp);
         }
     }
+
 
     /**
      * Process all the PDF in a given directory with a pdf extraction and

@@ -393,6 +393,7 @@ public class ProcessEngine implements Closeable {
         LOGGER.info(result + " files processed.");
     }
 
+
     /**
      * Generate blank training data from provided directory of PDF documents, i.e. where TEI files are text only
      * without tags. This can be used to start from scratch any new model. 
