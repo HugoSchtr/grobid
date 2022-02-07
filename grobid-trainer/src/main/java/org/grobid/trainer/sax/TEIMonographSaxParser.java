@@ -5,9 +5,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.StringTokenizer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SAX parser for the TEI format for monograph data. Normally all training data should be in this unique format.
@@ -18,12 +22,13 @@ import java.util.StringTokenizer;
  */
 public class TEIMonographSaxParser extends DefaultHandler {
 
-    //private Stack<StringBuffer> accumulators = null; // accumulated parsed piece of texts
+    private static final Logger logger = LoggerFactory.getLogger(TEIMonographSaxParser.class);
+
     private StringBuffer accumulator = null; // current accumulated text
 
     private String output = null;
     private Stack<String> currentTags = null;
-
+    private String currentTag = null;
     //private String fileName = null;
     //private String pdfName = null;
 
@@ -32,14 +37,12 @@ public class TEIMonographSaxParser extends DefaultHandler {
     public TEIMonographSaxParser() {
         labeled = new ArrayList<String>();
         currentTags = new Stack<String>();
-        //accumulators = new Stack<StringBuffer>();
         accumulator = new StringBuffer();
     }
 
     public void characters(char[] buffer, int start, int length) {
         //if (accumulator != null)
         accumulator.append(buffer, start, length);
-        System.out.println(accumulator.toString());
     }
 
     public String getText() {
@@ -59,6 +62,9 @@ public class TEIMonographSaxParser extends DefaultHandler {
                            java.lang.String qName) throws SAXException {
         if ((!qName.equals("lb")) & (!qName.equals("pb"))) {
             writeData(qName, true);
+            if (!currentTags.empty()) {
+                currentTag = currentTags.peek();
+            }
         }
     }
 
@@ -66,7 +72,7 @@ public class TEIMonographSaxParser extends DefaultHandler {
                              String localName,
                              String qName,
                              Attributes atts)
-            throws SAXException {
+        throws SAXException {
         if (qName.equals("lb")) {
             accumulator.append(" +L+ ");
         } else if (qName.equals("pb")) {
@@ -80,38 +86,57 @@ public class TEIMonographSaxParser extends DefaultHandler {
                 }
             }
             accumulator.setLength(0);
-
-            if (qName.equals("header")) {
-                currentTags.push("<header>");
-            } else if (qName.equals("other")) {
-                currentTags.push("<other>");
-            } else if (qName.equals("page_header")) {
-                currentTags.push("<page_header>");
-            } else if (qName.equals("page_footnote")) {
-                currentTags.push("<page_footnote>");
-            } else if (qName.equals("page") | qName.equals("pages")) {
-                currentTags.push("<page>");
-            } else if (qName.equals("reference")) {
-                currentTags.push("<reference>");
+            if (qName.equals("cover")) {
+                currentTags.push("<cover>");
+            } else if (qName.equals("title")) {
+                currentTags.push("<title>");
+            } else if (qName.equals("publisher")) {
+                currentTags.push("<publisher>");
+            } else if (qName.equals("summary")) {
+                currentTags.push("<summary>");
+            } else if (qName.equals("biography")) {
+                currentTags.push("<biography>");
+            } else if (qName.equals("advertisement")) {
+                currentTags.push("<advertisement>");
             } else if (qName.equals("toc")) {
                 currentTags.push("<toc>");
+            } else if (qName.equals("tof")) {
+                currentTags.push("<tof>");
+            } else if (qName.equals("preface")) {
+                currentTags.push("<preface>");
+            } else if (qName.equals("dedication")) {
+                currentTags.push("<dedication>");
+            } else if (qName.equals("unit")) {
+                currentTags.push("<unit>");
+            } else if (qName.equals("reference")) {
+                currentTags.push("<reference>");
+            } else if (qName.equals("annex")) {
+                currentTags.push("<annex>");
             } else if (qName.equals("index")) {
                 currentTags.push("<index>");
-            } else if (qName.equals("section")) {
-                currentTags.push("<section>");
+            } else if (qName.equals("glossary")) {
+                currentTags.push("<glossary>");
+            } else if (qName.equals("back")) {
+                currentTags.push("<back>");
+            } else if (qName.equals("other")) {
+                currentTags.push("<other>");
             }
         }
     }
 
     private void writeData(String qName, boolean pop) {
-        if ((qName.equals("header")) | (qName.equals("other")) | (qName.equals("page_header")) |
-                (qName.equals("page_footnote")) | (qName.equals("page")) | (qName.equals("pages")) |
-                (qName.equals("reference")) |
-                (qName.equals("toc")) | (qName.equals("index")) | (qName.equals("section"))
-                ) {
-            String currentTag = null;
+        if (qName.equals("div") || (qName.equals("cover")) || (qName.equals("title"))
+            || (qName.equals("publisher")) || (qName.equals("summary")) || (qName.equals("biography"))
+            || (qName.equals("advertisement")) || (qName.equals("toc")) || (qName.equals("tof"))
+            || (qName.equals("preface")) || (qName.equals("dedication")) || (qName.equals("unit"))
+            || (qName.equals("reference")) || (qName.equals("annex")) || (qName.equals("index"))
+            || (qName.equals("glossary")) || (qName.equals("back")) || (qName.equals("other"))) {
+            if (currentTag == null) {
+                return;
+            }
             if (pop) {
-                currentTag = currentTags.pop();
+                if (!currentTags.empty()) {
+                currentTag = currentTags.pop();}
             } else {
                 currentTag = currentTags.peek();
             }

@@ -5,6 +5,8 @@ import org.grobid.core.exceptions.GrobidException;
 import org.grobid.core.utilities.GrobidProperties;
 import org.grobid.core.utilities.UnicodeUtil;
 import org.grobid.trainer.sax.TEIMonographSaxParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -23,12 +25,12 @@ public class MonographTrainer extends AbstractTrainer {
 
     @Override
     public int createCRFPPData(File corpusPath, File outputFile) {
-        return addFeaturesSegmentation(corpusPath.getAbsolutePath() + "/tei",
+        return addFeaturesMonograph(corpusPath.getAbsolutePath() + "/tei",
                 corpusPath.getAbsolutePath() + "/raw",
                 outputFile, null, 1.0);
     }
 
-       /**
+    /**
      * Add the selected features for the monograph model
      *
      * @param corpusDir          path where corpus files are located
@@ -42,11 +44,11 @@ public class MonographTrainer extends AbstractTrainer {
                                final File trainingOutputPath,
                                final File evalOutputPath,
                                double splitRatio) {
-        return addFeaturesSegmentation(corpusDir.getAbsolutePath() + "/tei",
-                corpusDir.getAbsolutePath() + "/raw",
-                trainingOutputPath,
-                evalOutputPath,
-                splitRatio);
+        return addFeaturesMonograph(corpusDir.getAbsolutePath() + "/tei",
+            corpusDir.getAbsolutePath() + "/raw",
+            trainingOutputPath,
+            evalOutputPath,
+            splitRatio);
     }
 
     /**
@@ -59,11 +61,11 @@ public class MonographTrainer extends AbstractTrainer {
      * @param splitRatio         ratio to consider for separating training and evaluation data, e.g. 0.8 for 80%
      * @return number of examples
      */
-    public int addFeaturesSegmentation(String sourceTEIPathLabel,
-                                       String sourceRawPathLabel,
-                                       final File trainingOutputPath,
-                                       final File evalOutputPath,
-                                       double splitRatio) {
+    public int addFeaturesMonograph(String sourceTEIPathLabel,
+                                    String sourceRawPathLabel,
+                                    final File trainingOutputPath,
+                                    final File evalOutputPath,
+                                    double splitRatio) {
         int totalExamples = 0;
         try {
             System.out.println("sourceTEIPathLabel: " + sourceTEIPathLabel);
@@ -115,15 +117,76 @@ public class MonographTrainer extends AbstractTrainer {
                 SAXParser p = spf.newSAXParser();
                 p.parse(tf, parser2);
 
+               // List<String> labeled = parser2.getLabeledResult();
                 List<String> labeled = parser2.getLabeledResult();
-
                 // we can now add the features
                 // we open the featured file
                 try {
-                    File theRawFile = new File(sourceRawPathLabel + File.separator + name.replace(".tei.xml", ""));
-                    if (!theRawFile.exists()) {
-                        LOGGER.error("The raw file does not exist: " + theRawFile.getPath());
+                    File rawFile = new File(sourceRawPathLabel + File.separator +
+                                    name.replace(".tei.xml", ""));
+                    if (!rawFile.exists()) {
+                        LOGGER.error("The raw file does not exist: " + rawFile.getPath());
                         continue;
+                    }
+
+                    // read the raw CRF file
+                    BufferedReader bis = new BufferedReader(
+                            new InputStreamReader(new FileInputStream(
+                            rawFile), "UTF8"));
+                    int q = 0; // current position in the TEI labeled list
+                    StringBuilder referenceText = new StringBuilder();
+
+                    // read by lines the raw CRF file and add the tags
+                    String line = bis.readLine();
+                    String token1 = null, token2 = null;
+                    int totFound= 0, lastPositionFound = 0, lastPosition = 0, totData = 0;
+                    boolean found = false;
+                    while ((line = bis.readLine()) != null) {
+                        String lines[] = line.split(" ");
+                        // every line of a CRF raw file contains 2 first tokens of each line of Pdf files
+                        token1 = UnicodeUtil.normaliseTextAndRemoveSpaces(lines[0]);
+                        token2 = UnicodeUtil.normaliseTextAndRemoveSpaces(lines[1]);
+                        String currentLocalText = null, currentTag = null;
+                        if (lastPosition >= labeled.size() - 1) {
+                            lastPosition = lastPositionFound;
+                        }
+
+                        for (int i = lastPosition; i < labeled.size(); i++) {
+                            currentLocalText = labeled.get(i);
+                            currentTag = labeled.get(i);
+                            if (currentLocalText.contains(token1) || currentLocalText.contains(token2)) { // if they are found
+                                found = true;
+                                totFound++;
+                                lastPositionFound = i;
+                                if (line.contains("BLOCKSTART") && line.contains("PAGESTART")){
+                                    referenceText.append(line).append(" I-").append(currentTag);
+                                } else {
+                                    referenceText.append(line).append(" ").append(currentTag);
+                                }
+                            }
+                            if (found || lastPosition >= labeled.size() - 1) {
+                                found = false;
+                                break;
+                            } else {
+                                lastPosition++;
+                            }
+                        }
+                        totData++;
+                        line = bis.readLine();
+                    }
+                    System.out.println("Total data found between CRF and TEI files " + totFound + " from total " + totData + " examples.");
+                    bis.close();
+
+                    if ((writer2 == null) && (writer3 != null))
+                        writer3.write(referenceText.toString() + "\n");
+                    if ((writer2 != null) && (writer3 == null))
+                        writer2.write(referenceText.toString() + "\n");
+                    else {
+                        if (Math.random() <= splitRatio) {
+                            writer2.write(referenceText.toString() + "\n");
+                        } else if (writer3 != null) {
+                            writer3.write(referenceText.toString() + "\n");
+                        }
                     }
 
                 } catch (Exception e) {
@@ -158,5 +221,4 @@ public class MonographTrainer extends AbstractTrainer {
         System.out.println(AbstractTrainer.runEvaluation(new MonographTrainer()));
         System.exit(0);
     }
-
 }
