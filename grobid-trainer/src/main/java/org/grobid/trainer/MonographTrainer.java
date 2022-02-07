@@ -26,8 +26,8 @@ public class MonographTrainer extends AbstractTrainer {
     @Override
     public int createCRFPPData(File corpusPath, File outputFile) {
         return addFeaturesMonograph(corpusPath.getAbsolutePath() + "/tei",
-                corpusPath.getAbsolutePath() + "/raw",
-                outputFile, null, 1.0);
+            corpusPath.getAbsolutePath() + "/raw",
+            outputFile, null, 1.0);
     }
 
     /**
@@ -117,13 +117,13 @@ public class MonographTrainer extends AbstractTrainer {
                 SAXParser p = spf.newSAXParser();
                 p.parse(tf, parser2);
 
-               // List<String> labeled = parser2.getLabeledResult();
+                // List<String> labeled = parser2.getLabeledResult();
                 List<String> labeled = parser2.getLabeledResult();
                 // we can now add the features
                 // we open the featured file
                 try {
                     File rawFile = new File(sourceRawPathLabel + File.separator +
-                                    name.replace(".tei.xml", ""));
+                        name.replace(".tei.xml", ""));
                     if (!rawFile.exists()) {
                         LOGGER.error("The raw file does not exist: " + rawFile.getPath());
                         continue;
@@ -131,7 +131,7 @@ public class MonographTrainer extends AbstractTrainer {
 
                     // read the raw CRF file
                     BufferedReader bis = new BufferedReader(
-                            new InputStreamReader(new FileInputStream(
+                        new InputStreamReader(new FileInputStream(
                             rawFile), "UTF8"));
                     int q = 0; // current position in the TEI labeled list
                     StringBuilder referenceText = new StringBuilder();
@@ -190,7 +190,7 @@ public class MonographTrainer extends AbstractTrainer {
                     }
 
                 } catch (Exception e) {
-                   LOGGER.error("Fail to open or process raw file", e);
+                    LOGGER.error("Fail to open or process raw file", e);
                 }
             }
 
