@@ -142,8 +142,8 @@ public class MonographParser extends AbstractParser {
         }
 
         doc.produceStatistics();
-        String content = getAllLinesFeatured(doc);
-        // String content = getAllBlocksFeatured(doc);
+        // String content = getAllLinesFeatured(doc);
+        String content = getAllBlocksFeatured(doc);
         if (isNotEmpty(trim(content))) {
             String labelledResult = label(content);
             // set the different sections of the Document object
