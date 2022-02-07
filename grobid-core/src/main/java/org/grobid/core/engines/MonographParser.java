@@ -143,6 +143,7 @@ public class MonographParser extends AbstractParser {
 
         doc.produceStatistics();
         String content = getAllLinesFeatured(doc);
+        // String content = getAllBlocksFeatured(doc);
         if (isNotEmpty(trim(content))) {
             String labelledResult = label(content);
             // set the different sections of the Document object
@@ -302,6 +303,66 @@ public class MonographParser extends AbstractParser {
         return featuresAsString;
     }
 
+    /**
+     * Addition of the features at block level for the complete document.
+     * <p/>
+     * This is an alternative to the token and line level, where the unit for labeling is the block - so allowing even
+     * faster processing and involving less features.
+     * Lexical features becomes block prefix and suffix, the feature text unit is the first 10 characters of the
+     * block without space.
+     * The dictionary flags are at block level (i.e. the block contains a name mention, a place mention, a year, etc.)
+     * Regarding layout features: font, size and style are the one associated to the first token of the block.
+     */
+    public String getAllBlocksFeatured(Document doc) {
+
+        List<Block> blocks = doc.getBlocks();
+        if ((blocks == null) || blocks.size() == 0) {
+            return null;
+        }
+
+        //guaranteeing quality of service. Otherwise, there are some PDF that may contain 300k blocks and thousands of extracted "images" that ruins the performance
+        if (blocks.size() > GrobidProperties.getPdfBlocksMax()) {
+            throw new GrobidException("Postprocessed document is too big, contains: " + blocks.size(), GrobidExceptionStatus.TOO_MANY_BLOCKS);
+        }
+
+        //boolean graphicVector = false;
+        //boolean graphicBitmap = false;
+
+        // list of textual patterns at the head and foot of pages which can be re-occur on several pages
+        // (typically indicating a publisher foot or head notes)
+        Map<String, Integer> patterns = new TreeMap<String, Integer>();
+        Map<String, Boolean> firstTimePattern = new TreeMap<String, Boolean>();
+
+        for (Page page : doc.getPages()) {
+            // we just look at the two first and last blocks of the page
+            if ((page.getBlocks() != null) && (page.getBlocks().size() > 0)) {
+                for(int blockIndex=0; blockIndex < page.getBlocks().size(); blockIndex++) {
+                    if ( (blockIndex < 2) || (blockIndex > page.getBlocks().size()-2)) {
+                        Block block = page.getBlocks().get(blockIndex);
+                        String localText = block.getText();
+                        if ((localText != null) && (localText.length() > 0)) {
+                            String pattern = featureFactory.getPattern(localText);
+                            if (pattern.length() > 8) {
+                                Integer nb = patterns.get(pattern);
+                                if (nb == null) {
+                                    patterns.put(pattern, Integer.valueOf("1"));
+                                    firstTimePattern.put(pattern, false);
+                                }
+                                else
+                                    patterns.put(pattern, Integer.valueOf(nb+1));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        String featuresAsString = getFeatureVectorsAsString(doc,
+            patterns, firstTimePattern);
+
+        return featuresAsString;
+    }
+
     private String getFeatureVectorsAsString(Document doc, Map<String, Integer> patterns,
                                              Map<String, Boolean> firstTimePattern) {
         StringBuilder fulltext = new StringBuilder();
@@ -318,8 +379,8 @@ public class MonographParser extends AbstractParser {
         double pageHeight = 0.0;
 
         // vector for features
-        FeaturesVectorSegmentation features;
-        FeaturesVectorSegmentation previousFeatures = null;
+        FeaturesVectorMonograph features;
+        FeaturesVectorMonograph previousFeatures = null;
 
         for (Page page : doc.getPages()) {
             pageHeight = page.getHeight();
@@ -345,7 +406,7 @@ public class MonographParser extends AbstractParser {
 
                 boolean lastPageBlock = false;
                 boolean firstPageBlock = false;
-                if (blockIndex == page.getBlocks().size() - 1) {
+                if (blockIndex == page.getBlocks().size()-1) {
                     lastPageBlock = true;
                 }
 
@@ -424,7 +485,7 @@ public class MonographParser extends AbstractParser {
 
                     double coordinateLineY = token.getY();
 
-                    features = new FeaturesVectorSegmentation();
+                    features = new FeaturesVectorMonograph();
                     features.token = token;
                     features.line = line;
 
@@ -444,7 +505,7 @@ public class MonographParser extends AbstractParser {
 
                     // we consider the first token of the line as usual lexical CRF token
                     // and the second token of the line as feature
-                    StringTokenizer st2 = new StringTokenizer(line, " \t\f\u00A0");
+                    StringTokenizer st2 = new StringTokenizer(line, " \t");
                     // alternatively, use a grobid analyser
                     String text = null;
                     String text2 = null;
@@ -457,7 +518,7 @@ public class MonographParser extends AbstractParser {
                         continue;
 
                     // final sanitisation and filtering
-                    text = text.replaceAll("[ \n\r]", "");
+                    text = text.replaceAll("[ \n]", "");
                     text = text.trim();
 
                     if ((text.length() == 0) ||
@@ -708,7 +769,7 @@ public class MonographParser extends AbstractParser {
                 String rese = label(fulltext);
                 StringBuffer bufferFulltext = trainingExtraction(rese, tokenizations, doc);
 
-                // write the TEI file to reflect the extact layout of the text as extracted from the pdf
+                // write the TEI file to reflect the extract layout of the text as extracted from the pdf
                 writer = new OutputStreamWriter(new FileOutputStream(new File(pathTEI +
                     File.separator +
                     PDFFileName.replace(".pdf", ".training.monograph.tei.xml")), false), "UTF-8");
