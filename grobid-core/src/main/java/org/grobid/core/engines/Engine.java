@@ -443,7 +443,7 @@ public class Engine implements Closeable {
      *                     file, -1 if not used
      */
     public void createTrainingBlank(File inputFile, String pathRaw, String pathTEI, int id) {
-        parsers.getSegmentationParser().createBlankTrainingData(inputFile, pathRaw, pathTEI, id);
+        parsers.getMonographParser().createBlankTrainingFromPDF(inputFile, pathRaw, pathTEI, id);
     }
 
     /**
