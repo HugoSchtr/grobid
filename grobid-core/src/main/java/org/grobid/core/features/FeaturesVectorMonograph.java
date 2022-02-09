@@ -43,6 +43,7 @@ public class FeaturesVectorMonograph {
 	public boolean firstPageBlock = false; 
 	public boolean lastPageBlock = false;
 	public int lineLength = 0;
+    public int blockLength = 0;
     public boolean bitmapAround = false;
     public boolean vectorAround = false;
     public boolean inMainArea = true;
@@ -187,7 +188,10 @@ public class FeaturesVectorMonograph {
 		}
 
 		// current line length on a predefined scale and relative to the longest line of the current block
-		res.append(" " + lineLength);
+		// res.append(" " + lineLength);
+
+        // current block length on a predefined scale and relative to the longest block of the current page
+        res.append(" " + blockLength);
 
         if (bitmapAround) {
             res.append(" 1");
