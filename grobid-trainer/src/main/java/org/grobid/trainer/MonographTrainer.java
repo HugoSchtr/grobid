@@ -117,7 +117,6 @@ public class MonographTrainer extends AbstractTrainer {
                 SAXParser p = spf.newSAXParser();
                 p.parse(tf, parser2);
 
-                // List<String> labeled = parser2.getLabeledResult();
                 List<String> labeled = parser2.getLabeledResult();
                 // we can now add the features
                 // we open the featured file
