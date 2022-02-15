@@ -1091,8 +1091,8 @@ public class MonographParser extends AbstractParser {
             }
             String pdfFileName = inputFile.getName();
 
-            File outputTEIFile = new File(pathTEI + "/" + pdfFileName.replace(".pdf", "training.monograph.tei.xml"));
-            File outputRawFile = new File(pathRaw + "/" + pdfFileName.replace(".pdf", "training.monograph"));
+            File outputTEIFile = new File(pathTEI + "/" + pdfFileName.replace(".pdf", ".training.monograph.tei.xml"));
+            File outputRawFile = new File(pathRaw + "/" + pdfFileName.replace(".pdf", ".training.monograph"));
 
             documentSource = DocumentSource.fromPdf(inputFile, -1, -1, false, true, true);
             doc = new Document(documentSource);
@@ -1165,7 +1165,7 @@ public class MonographParser extends AbstractParser {
     /**
      * Process the content of the specified pdf and format the result as training data.
      *
-     * @param inputFile    input file
+     * @param file         input file
      * @param pathFullText path to fulltext
      * @param pathTEI      path to TEI
      * @param id           id
@@ -1176,9 +1176,6 @@ public class MonographParser extends AbstractParser {
                                         int id) {
         DocumentSource documentSource = null;
         try {
-            // File file = inputFile;
-
-            //documentSource = DocumentSource.fromPdf(file);
             documentSource = DocumentSource.fromPdf(file, -1, -1, true, true, true);
             Document doc = new Document(documentSource);
 
@@ -1190,11 +1187,20 @@ public class MonographParser extends AbstractParser {
             }
             doc.produceStatistics();
 
-            // String fulltext = //getAllTextFeatured(doc, false);
-                // getAllLinesFeatured(doc);
+            //String fulltext = getAllLinesFeatured(doc);
             String fulltext = getAllBlocksFeatured(doc);
             //List<LayoutToken> tokenizations = doc.getTokenizationsFulltext();
             List<LayoutToken> tokenizations = doc.getTokenizations();
+
+            // TODO language identifier here on content text sample
+            String lang = null;
+            String text = doc.getBlocks().get(0).getText(); // get only the text from the first block as example to recognize the language
+            Language langID = languageUtilities.getInstance().runLanguageId(text);
+            if (langID != null) {
+                lang = langID.getLang();
+            } else {
+                lang = "fr"; // by default, id = english
+            }
 
             // we write the full text untagged (but featurized)
             String outPathFulltext = pathFullText + File.separator +
@@ -1221,7 +1227,7 @@ public class MonographParser extends AbstractParser {
                     File.separator +
                     PDFFileName.replace(".pdf", ".training.monograph.tei.xml")), false), "UTF-8");
                 writer.write("<?xml version=\"1.0\" ?>\n<tei xml:space=\"preserve\">\n\t<teiHeader>\n\t\t<fileDesc xml:id=\"" + id +
-                    "\"/>\n\t</teiHeader>\n\t<text xml:lang=\"en\">\n");
+                    "\"/>\n\t</teiHeader>\n\t<text xml:lang=\"" + lang + "\">\n");
 
                 writer.write(bufferFulltext.toString());
                 writer.write("\n\t</text>\n</tei>\n");
@@ -1235,13 +1241,6 @@ public class MonographParser extends AbstractParser {
             DocumentSource.close(documentSource, true, true, true);
         }
     }
-
-    /**
-     * Extract results from a labelled block of monograph.
-     *
-     * @param resultWithLabel :   featured block of monograph with the label
-     * @return a monograph item
-     */
 
     /**
      * Extract results from a labelled full text in the training format without any string modification.
@@ -1435,7 +1434,6 @@ public class MonographParser extends AbstractParser {
                     start = false;
                 }
             }
-
             return buffer;
         } catch (Exception e) {
             throw new GrobidException("An exception occured while running Grobid.", e);
