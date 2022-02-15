@@ -1,0 +1,58 @@
+> Task :grobid-core:compileJava FROM-CACHE
+> Task :grobid-core:processResources UP-TO-DATE
+> Task :grobid-core:classes UP-TO-DATE
+> Task :grobid-core:jar
+> Task :grobid-trainer:compileJava UP-TO-DATE
+> Task :grobid-trainer:processResources UP-TO-DATE
+> Task :grobid-trainer:classes UP-TO-DATE
+
+> Task :grobid-trainer:train_monograph
+sourceTEIPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/corpus/tei
+sourceRawPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/corpus/raw
+trainingOutputPath: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/tmp/monograph699953741107000897.train
+evalOutputPath: null
+7 tei files
+Total data found between CRF and TEI files 209 from total 269 examples.
+Total data found between CRF and TEI files 2080 from total 3847 examples.
+Total data found between CRF and TEI files 317 from total 387 examples.
+	epsilon: 1.0E-7
+	window: 50
+	nb max iterations: 1000
+	nb threads: 8
+Model for monograph created in 175870 ms
+sourceTEIPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/evaluation/tei
+sourceRawPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/evaluation/raw
+trainingOutputPath: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/tmp/monograph5228400771783416666.test
+evalOutputPath: null
+2 tei files
+Total data found between CRF and TEI files 751 from total 1006 examples.
+Labeling took: 50 ms
+
+===== Field-level results =====
+
+label                accuracy     precision    recall       f1           support
+
+<cover>              84.62        0            0            0            1      
+<preface>            92.31        0            0            0            1      
+<reference>          92.31        0            0            0            1      
+<title>              84.62        0            0            0            2      
+<unit>               46.15        0            0            0            2      
+
+all (micro avg.)     80           0            0            0            7      
+all (macro avg.)     80           0            0            0            7      
+
+===== Instance-level results =====
+
+Total expected instances:   1
+Correct instances:          0
+Instance-level recall:      0
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.1.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 3m 0s
+6 actionable tasks: 2 executed, 1 from cache, 3 up-to-date

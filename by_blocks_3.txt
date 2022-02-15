@@ -1,0 +1,115 @@
+> Task :grobid-core:compileJava UP-TO-DATE
+> Task :grobid-core:processResources UP-TO-DATE
+> Task :grobid-core:classes UP-TO-DATE
+> Task :grobid-core:jar UP-TO-DATE
+> Task :grobid-trainer:compileJava UP-TO-DATE
+> Task :grobid-trainer:processResources UP-TO-DATE
+> Task :grobid-trainer:classes UP-TO-DATE
+
+> Task :grobid-trainer:train_monograph
+sourceTEIPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/corpus/tei
+sourceRawPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/corpus/raw
+trainingOutputPath: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/tmp/monograph73620839575478394.train
+evalOutputPath: null
+54 tei files
+Total data found between CRF and TEI files 2203 from total 2780 examples.
+Total data found between CRF and TEI files 1744 from total 2384 examples.
+Total data found between CRF and TEI files 182 from total 221 examples.
+Total data found between CRF and TEI files 265 from total 271 examples.
+Total data found between CRF and TEI files 351 from total 461 examples.
+Total data found between CRF and TEI files 240 from total 287 examples.
+Total data found between CRF and TEI files 673 from total 811 examples.
+Total data found between CRF and TEI files 2733 from total 3602 examples.
+Total data found between CRF and TEI files 432 from total 484 examples.
+Total data found between CRF and TEI files 128 from total 137 examples.
+Total data found between CRF and TEI files 1041 from total 1208 examples.
+Total data found between CRF and TEI files 1010 from total 1067 examples.
+Total data found between CRF and TEI files 181 from total 218 examples.
+Total data found between CRF and TEI files 199 from total 240 examples.
+Total data found between CRF and TEI files 78 from total 96 examples.
+Total data found between CRF and TEI files 111 from total 146 examples.
+Total data found between CRF and TEI files 37 from total 57 examples.
+Total data found between CRF and TEI files 62 from total 78 examples.
+Total data found between CRF and TEI files 258 from total 331 examples.
+Total data found between CRF and TEI files 148 from total 174 examples.
+Total data found between CRF and TEI files 229 from total 255 examples.
+Total data found between CRF and TEI files 436 from total 603 examples.
+Total data found between CRF and TEI files 42 from total 47 examples.
+Total data found between CRF and TEI files 216 from total 248 examples.
+Total data found between CRF and TEI files 506 from total 511 examples.
+Total data found between CRF and TEI files 259 from total 285 examples.
+Total data found between CRF and TEI files 183 from total 230 examples.
+Total data found between CRF and TEI files 1368 from total 2347 examples.
+Total data found between CRF and TEI files 198 from total 267 examples.
+Total data found between CRF and TEI files 359 from total 419 examples.
+Total data found between CRF and TEI files 293 from total 384 examples.
+Total data found between CRF and TEI files 200 from total 227 examples.
+Total data found between CRF and TEI files 153 from total 161 examples.
+Total data found between CRF and TEI files 220 from total 238 examples.
+Total data found between CRF and TEI files 176 from total 193 examples.
+Total data found between CRF and TEI files 704 from total 795 examples.
+Total data found between CRF and TEI files 195 from total 219 examples.
+Total data found between CRF and TEI files 332 from total 436 examples.
+Total data found between CRF and TEI files 86 from total 104 examples.
+Total data found between CRF and TEI files 47 from total 63 examples.
+Total data found between CRF and TEI files 128 from total 131 examples.
+Total data found between CRF and TEI files 665 from total 848 examples.
+Total data found between CRF and TEI files 884 from total 1019 examples.
+Total data found between CRF and TEI files 1107 from total 1475 examples.
+Total data found between CRF and TEI files 90 from total 128 examples.
+Total data found between CRF and TEI files 208 from total 247 examples.
+Total data found between CRF and TEI files 91 from total 97 examples.
+Total data found between CRF and TEI files 159 from total 170 examples.
+Total data found between CRF and TEI files 730 from total 914 examples.
+Total data found between CRF and TEI files 76 from total 83 examples.
+Total data found between CRF and TEI files 248 from total 268 examples.
+Total data found between CRF and TEI files 180 from total 183 examples.
+Total data found between CRF and TEI files 113 from total 120 examples.
+	epsilon: 1.0E-7
+	window: 50
+	nb max iterations: 1500
+	nb threads: 8
+Model for monograph created in 5150976 ms
+sourceTEIPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/evaluation/tei
+sourceRawPathLabel: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/../grobid-trainer/resources/dataset/monograph/evaluation/raw
+trainingOutputPath: /home/hugoscheithauer/Dev/grobid-fork/grobid/grobid-trainer/../grobid-home/tmp/monograph2678117750997138973.test
+evalOutputPath: null
+7 tei files
+Total data found between CRF and TEI files 126 from total 134 examples.
+Total data found between CRF and TEI files 145 from total 148 examples.
+Total data found between CRF and TEI files 325 from total 403 examples.
+Total data found between CRF and TEI files 76 from total 91 examples.
+Total data found between CRF and TEI files 77 from total 103 examples.
+Total data found between CRF and TEI files 690 from total 696 examples.
+Labeling took: 112 ms
+
+===== Field-level results =====
+
+label                accuracy     precision    recall       f1           support
+
+<back>               94.92        0            0            0            3      
+<cover>              84.75        0            0            0            5      
+<index>              98.31        0            0            0            0      
+<preface>            74.58        0            0            0            4      
+<reference>          94.92        0            0            0            2      
+<title>              79.66        0            0            0            7      
+<unit>               72.88        0            0            0            6      
+
+all (micro avg.)     83.62        0            0            0            27     
+all (macro avg.)     83.62        0            0            0            27     
+
+===== Instance-level results =====
+
+Total expected instances:   6
+Correct instances:          0
+Instance-level recall:      0
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.1.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 1h 25m 55s
+6 actionable tasks: 1 executed, 5 up-to-date
