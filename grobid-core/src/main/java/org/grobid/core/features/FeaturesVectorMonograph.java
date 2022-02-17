@@ -188,10 +188,10 @@ public class FeaturesVectorMonograph {
 		}
 
 		// current line length on a predefined scale and relative to the longest line of the current block
-		// res.append(" " + lineLength);
+		 res.append(" " + lineLength);
 
         // current block length on a predefined scale and relative to the longest block of the current page
-        res.append(" " + blockLength);
+        // res.append(" " + blockLength);
 
         if (bitmapAround) {
             res.append(" 1");
