@@ -143,8 +143,8 @@ public class MonographParser extends AbstractParser {
         }
 
         doc.produceStatistics();
-        // String content = getAllLinesFeatured(doc);
-        String content = getAllBlocksFeatured(doc);
+        String content = getAllLinesFeatured(doc);
+        // String content = getAllBlocksFeatured(doc);
         if (isNotEmpty(trim(content))) {
             String labelledResult = label(content);
             // set the different sections of the Document object
@@ -1140,10 +1140,10 @@ public class MonographParser extends AbstractParser {
 
                 // besides the tagged TEI file, we also need the raw file with some key layout featuresAsString
                 // gather the features by blocks
-                String rawText = getAllBlocksFeatured(doc);
+                // String rawText = getAllBlocksFeatured(doc);
 
                 // gather the features by lines
-                // String rawText = getAllBlocksFeatured(doc);
+                String rawText = getAllLinesFeatured(doc);
 
                 // Let us now take care of the raw file
                 writer = new OutputStreamWriter(new FileOutputStream(outputRawFile, false), "UTF-8");
@@ -1187,8 +1187,8 @@ public class MonographParser extends AbstractParser {
             }
             doc.produceStatistics();
 
-            //String fulltext = getAllLinesFeatured(doc);
-            String fulltext = getAllBlocksFeatured(doc);
+            String fulltext = getAllLinesFeatured(doc);
+            //String fulltext = getAllBlocksFeatured(doc);
             //List<LayoutToken> tokenizations = doc.getTokenizationsFulltext();
             List<LayoutToken> tokenizations = doc.getTokenizations();
 
