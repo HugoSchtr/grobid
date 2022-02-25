@@ -44,7 +44,12 @@ U60:%x[-1,8]
 U61:%x[0,8]
 U62:%x[1,8]
 
-# Font info (9-10)
+# Alignment status (9)
+U60:%x[-1,12]
+U61:%x[0,12]
+U62:%x[1,12]
+
+# Font info (10-11)
 U70:%x[-1,9]
 U71:%x[0,9]
 U72:%x[1,9]
@@ -53,32 +58,32 @@ U80:%x[-1,10]
 U81:%x[0,10]
 U82:%x[1,10]
 
-# Bold info (11)
+# Bold info (12)
 U90:%x[-1,11]
 U91:%x[0,11]
 U92:%x[1,11]
 
-# Italic info (12)
+# Italic info (13)
 UA0:%x[-1,12]
 UA1:%x[0,12]
 UA2:%x[1,12]
 
-# Capitalization (13)
+# Capitalization (14)
 UB0:%x[0,13]
 UB1:%x[1,13]
 UB2:%x[-1,13]
 
-# Digits (14)
+# Digits (15)
 UC0:%x[0,14]
 UC1:%x[-1,14]
 UC2:%x[1,14]
 
-# Char (15)
+# Char (16)
 UD0:%x[0,15]
 UD1:%x[-1,15]
 UD2:%x[1,15]
 
-# Dict info (16-22)
+# Dict info (17-23)
 UE0:%x[0,16]
 UE1:%x[0,17]
 UE2:%x[0,18]
@@ -95,32 +100,32 @@ UEM:%x[1,20]
 UEN:%x[1,21]
 UEO:%x[1,22]
 
-# relative document position (23)
+# relative document position (24)
 UG0:%x[-1,23]
 UG1:%x[0,23]
 UG2:%x[1,23]
 
-# relative page position coordinate (24)
+# relative page position coordinate (25)
 UH0:%x[-1,24]
 UH1:%x[0,24]
 UH2:%x[1,24]
 
-# punctuation profile (25)
+# punctuation profile (26)
 UI0:%x[-1,25]
 UI1:%x[0,25]
 UI2:%x[1,25]
 
-# number of punctuation charcaters in the line (26)
+# number of punctuation charcaters in the line (27)
 UI0:%x[-1,26]
 UI1:%x[0,26]
 UI2:%x[1,26]
 
-# (scaled) line length (27)
+# (scaled) line length (28)
 UI0:%x[-1,27]
 UI1:%x[0,27]
 UI2:%x[1,27]
 
-# bitmap connected to the current block (28)
+# bitmap connected to the current block (29)
 UG0:%x[-2,28]
 UG1:%x[-1,28]
 UG2:%x[0,28]
@@ -128,7 +133,7 @@ UG3:%x[1,28]
 UG4:%x[2,28]
 UG5:%x[3,28]
 
-# vector graphic connected to the current block (29)
+# vector graphic connected to the current block (30)
 UG0:%x[-2,29]
 UG1:%x[-1,29]
 UG2:%x[0,29]
@@ -136,7 +141,7 @@ UG3:%x[1,29]
 UG4:%x[2,29]
 UG5:%x[3,29]
 
-# pattern repeated on several pages (30)
+# pattern repeated on several pages (31)
 UH0:%x[-2,30]
 UH1:%x[-1,30]
 UH2:%x[0,30]
@@ -144,12 +149,12 @@ UH3:%x[1,30]
 UH4:%x[2,30]
 UH5:%x[3,30]
 
-# if we have a repeated pattern, indicate the first (31)
+# if we have a repeated pattern, indicate the first (32)
 UI1:%x[-1,31]
 UI2:%x[0,31]
 UI3:%x[1,31]
 
-# if the block is in the page main area (32)
+# if the block is in the page main area (33)
 UJ1:%x[-2,32]
 UJ1:%x[-1,32]
 UJ2:%x[0,32]

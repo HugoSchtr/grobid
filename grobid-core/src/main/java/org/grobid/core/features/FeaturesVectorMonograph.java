@@ -85,12 +85,12 @@ public class FeaturesVectorMonograph {
         // line information (1)
 		if (lineStatus != null)
 			res.append(" " + lineStatus);
-		
-        // line alignment/identation information (1)
-        //res.append(" " + alignmentStatus);
 
         // page information (1)
         res.append(" " + pageStatus);
+
+        // line alignment/identation information (1)
+        res.append(" " + alignmentStatus);
 
         // font information (1)
         res.append(" " + fontStatus);

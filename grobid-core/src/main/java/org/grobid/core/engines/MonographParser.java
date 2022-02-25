@@ -726,6 +726,9 @@ public class MonographParser extends AbstractParser {
         int pageLength = 0; // length of the current page
         double pageHeight = 0.0;
 
+        double lineStartX = Double.NaN;
+        boolean indented = false;
+
         // vector for features
         FeaturesVectorMonograph features;
         FeaturesVectorMonograph previousFeatures = null;
@@ -745,6 +748,9 @@ public class MonographParser extends AbstractParser {
 
             for (int blockIndex = 0; blockIndex < page.getBlocks().size(); blockIndex++) {
                 Block block = page.getBlocks().get(blockIndex);
+                boolean newline = false;
+                boolean previousNewline = true;
+
                 /*if (start) {
                     newPage = true;
                     start = false;
@@ -853,7 +859,7 @@ public class MonographParser extends AbstractParser {
 
                     // we consider the first token of the line as usual lexical CRF token
                     // and the second token of the line as feature
-                    StringTokenizer st2 = new StringTokenizer(line, " \t");
+                    StringTokenizer st2 = new StringTokenizer(line, " \t\f\u00A0");
                     // alternatively, use a grobid analyser
                     String text = null;
                     String text2 = null;
@@ -865,8 +871,35 @@ public class MonographParser extends AbstractParser {
                     if (text == null)
                         continue;
 
+                    if (text.equals("\n") || text.equals("\r")) {
+                        previousNewline = true;
+                        newline = false;
+                        continue;
+                    }
+
+                    if (previousNewline) {
+                        newline = true;
+                        previousNewline = false;
+                        if (previousFeatures != null) {
+                            double previousLineStartX = lineStartX;
+                            lineStartX = token.getX();
+                            double characterWidth = token.width / token.getText().length();
+                            if (!Double.isNaN(previousLineStartX)) {
+                                // Indentation if line start is > 1 character width to the right of previous line start
+                                if (lineStartX - previousLineStartX > characterWidth)
+                                    indented = true;
+                                    // Indentation ends if line start is > 1 character width to the left of previous line start
+                                else if (previousLineStartX - lineStartX > characterWidth)
+                                    indented = false;
+                                // Otherwise indentation is unchanged
+                            }
+                        }
+                    } else{
+                        newline = false;
+                    }
+
                     // final sanitisation and filtering
-                    text = text.replaceAll("[ \n]", "");
+                    text = text.replaceAll("[ \n\r]", "");
                     text = text.trim();
 
                     if ((text.length() == 0) ||
@@ -918,6 +951,13 @@ public class MonographParser extends AbstractParser {
                         features.pageStatus = "PAGEIN";
                         newPage = false;
                         //endPage = false;
+                    }
+
+                    if (indented) {
+                        features.alignmentStatus = "LINEINDENT";
+                    }
+                    else {
+                        features.alignmentStatus = "ALIGNEDLEFT";
                     }
 
                     if (text.length() == 1) {
@@ -990,7 +1030,6 @@ public class MonographParser extends AbstractParser {
                         features.fontSize = "LOWERFONT";
                         currentFontSize = newFontSize;
                     }
-
                     if (token.getBold())
                         features.bold = true;
 
